@@ -273,6 +273,22 @@ defmodule ClickhouseEcto.QueryString do
     Float.to_string(literal)
   end
 
+  def expr(v1, v2, v3, v4, v5) do
+    IO.inspect {v1, v2, v3, v4, v5}
+  end
+
+  def expr(v1, v2, v3, v4) do
+    IO.inspect {v1, v2, v3, v4}
+  end
+
+  def expr(v1, v2, v3) do
+    IO.inspect {v1, v2, v3}
+  end
+
+  def expr(v1, v2) do
+    IO.inspect {v1, v2}
+  end
+
   def interval(count, _interval, sources, query) do
     [expr(count, sources, query)]
   end
@@ -292,9 +308,10 @@ defmodule ClickhouseEcto.QueryString do
   end
 
   def create_names(prefix, sources, pos, limit) when pos < limit do
+    # IO.inspect {prefix, sources, pos, limit}
     current =
       case elem(sources, pos) do
-        {table, schema} ->
+        {table, schema, _} ->
           name = [String.first(table) | Integer.to_string(pos)]
           {Helpers.quote_table(prefix, table), name, schema}
         {:fragment, _, _} ->
