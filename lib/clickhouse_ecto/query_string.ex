@@ -273,20 +273,8 @@ defmodule ClickhouseEcto.QueryString do
     Float.to_string(literal)
   end
 
-  def expr(v1, v2, v3, v4, v5) do
-    IO.inspect {v1, v2, v3, v4, v5}
-  end
-
-  def expr(v1, v2, v3, v4) do
-    IO.inspect {v1, v2, v3, v4}
-  end
-
-  def expr(v1, v2, v3) do
-    IO.inspect {v1, v2, v3}
-  end
-
-  def expr(v1, v2) do
-    IO.inspect {v1, v2}
+  def expr(%Ecto.Query.FromExpr{source: %Ecto.SubQuery{query: query, params: params}}, _sources, _query) do
+    Connection.all(query)
   end
 
   def interval(count, _interval, sources, query) do
