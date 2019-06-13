@@ -1,6 +1,7 @@
 defmodule ClickhouseEcto.Migration do
   require IEx
-  alias Ecto.Migration.{Table, Index, Reference, Constraint}
+  # alias Ecto.Migration.{Table, Index, Reference, Constraint}
+  alias Ecto.Migration.{Table, Reference}
 
   import ClickhouseEcto.Helpers
 
@@ -48,7 +49,7 @@ defmodule ClickhouseEcto.Migration do
       " TO ", quote_name(new_table.name)]]
   end
 
-  def execute_ddl({:rename, %Table{} = table, current_column, new_column}) do
+  def execute_ddl({:rename, %Table{} = _table, _current_column, _new_column}) do
     # https://github.com/yandex/ClickHouse/issues/146
     raise "It seems like reneaming columns is not supported..."
   end
@@ -150,7 +151,7 @@ defmodule ClickhouseEcto.Migration do
   defp null_expr(true), do: " NULL"
   defp null_expr(_), do: []
 
-  defp default_expr({:ok, _} = default, type, table, name),
+  defp default_expr({:ok, _} = default, type, _table, _name),
     do: [default_expr(default, type)]
   defp default_expr(:error, _, _, _),
     do: []

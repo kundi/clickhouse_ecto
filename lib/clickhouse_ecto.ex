@@ -27,8 +27,11 @@ defmodule ClickhouseEcto do
   def supports_ddl_transaction?, do: Migration.supports_ddl_transaction?
 
   ## Storage
-  def storage_up(opts), do: Storage.storage_up(opts)
-  def storage_down(opts), do: Storage.storage_down(opts)
+  @impl true
+  def storage_up(options), do: Storage.storage_up(options)
+
+  @impl true
+  def storage_down(options), do: Storage.storage_down(options)
 
   ## Structure
   def structure_dump(default, config), do: Structure.structure_dump(default, config)

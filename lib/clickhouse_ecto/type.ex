@@ -35,7 +35,11 @@ defmodule ClickhouseEcto.Type do
   end
 
   def decode(value, type)
-  when type in [:float] do
+  when type in @decimal_types do
+    {:ok, Decimal.new(value)}
+  end
+
+  def decode(value, :float) do
     tmp = if is_binary(value), do: value, else: to_string(value)
     case Float.parse(tmp) do
       {float, _}  -> {:ok, float}
@@ -43,32 +47,27 @@ defmodule ClickhouseEcto.Type do
     end
   end
 
-  def decode(value, type)
-  when type in @decimal_types do
-    {:ok, Decimal.new(value)}
-  end
-
   def decode(value, :uuid) do
     Ecto.UUID.dump(value)
   end
 
-  def decode({date, {h, m, s}}, type)
-  when type in [:utc_datetime, :naive_datetime] do
+  def decode({date, {h, m, s}}, :utc_datetime), do:
     {:ok, {date, {h, m, s, 0}}}
+
+  def decode({date, {h, m, s}}, :native_datetime), do:
+    {:ok, {date, {h, m, s, 0}}}
+
+  def decode(@empty_clickhouse_date, :date) do
+    {:ok, value} = Ecto.Type.cast(:date, @unix_default_time)
+    Ecto.Type.dump(:date, value)
+  end
+  
+  def decode(value, :date) when is_binary(value) do
+    {:ok, value} = Ecto.Type.cast(:date, value)
+    Ecto.Type.dump(:date, value)
   end
 
-  def decode(value, type)
-  when type in [:date] and is_binary(value) do
-    case value do
-      @empty_clickhouse_date ->
-        Ecto.Date.cast!(@unix_default_time)
-      val ->
-        Ecto.Date.cast!(val)
-    end |> Ecto.Date.dump
-  end
-
-  def decode(value, _type) do
+  def decode(value, _type), do:
     {:ok, value}
-  end
 
 end

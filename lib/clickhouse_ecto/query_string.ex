@@ -209,9 +209,9 @@ defmodule ClickhouseEcto.QueryString do
     end
   end
 
-  def expr(%Ecto.SubQuery{query: query, params: params}, _sources, _query) do
-    Connection.all(query)
-  end
+  # def expr(%Ecto.SubQuery{query: query, params: params}, _sources, _query) do
+  #   Connection.all(query)
+  # end
 
   def expr({:fragment, _, [kw]}, _sources, query) when is_list(kw) or tuple_size(kw) == 3 do
     Helpers.error!(query, "ClickHouse adapter does not support keyword or interpolated fragments")
