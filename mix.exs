@@ -24,7 +24,7 @@ defmodule ClickhouseEcto.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto, "~> 2.1"},
+      {:ecto_sql, "~> 3.1.4"},
       {:clickhousex, "~> 0.4.0"},
       {:ex_doc, "~> 0.19", only: :dev}
     ]
