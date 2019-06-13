@@ -1,7 +1,7 @@
 defmodule ClickhouseEcto.QueryString do
 
   alias Ecto.Query
-  alias Ecto.SubQuery
+  # alias Ecto.SubQuery
   alias Ecto.Query.{BooleanExpr, JoinExpr, QueryExpr}
   alias ClickhouseEcto.Connection
   alias ClickhouseEcto.Helpers
@@ -48,7 +48,7 @@ defmodule ClickhouseEcto.QueryString do
   def distinct(%QueryExpr{expr: []}, _, _), do: {[], []}
   def distinct(%QueryExpr{expr: true}, _, _), do: {" DISTINCT", []}
   def distinct(%QueryExpr{expr: false}, _, _), do: {[], []}
-  def distinct(%QueryExpr{expr: exprs}, sources, query) do
+  def distinct(%QueryExpr{expr: _exprs}, _sources, query) do
     Helpers.error!(query,
       "DISTINCT ON is not supported! Use `distinct: true`, for ex. `from rec in MyModel, distinct: true, select: rec.my_field`")
   end
@@ -58,7 +58,7 @@ defmodule ClickhouseEcto.QueryString do
     [" FROM ", from, " AS " | name]
   end
 
-  def update_fields(query, sources) do
+  def update_fields(query, _sources) do
     Helpers.error!(query, "UPDATE is not supported")
   end
 
@@ -273,7 +273,7 @@ defmodule ClickhouseEcto.QueryString do
     Float.to_string(literal)
   end
 
-  def expr(%Ecto.Query.FromExpr{source: %Ecto.SubQuery{query: query, params: params}}, _sources, _query) do
+  def expr(%Ecto.Query.FromExpr{source: %Ecto.SubQuery{query: query, params: _params}}, _sources, _query) do
     Connection.all(query)
   end
 
@@ -289,7 +289,7 @@ defmodule ClickhouseEcto.QueryString do
     expr(expr, sources, query)
   end
 
-  def returning(returning), do: raise "RETURNING is not supported!"
+  def returning(_returning), do: raise "RETURNING is not supported!"
 
   def create_names(%{prefix: prefix, sources: sources}) do
     create_names(prefix, sources, 0, tuple_size(sources)) |> List.to_tuple()
@@ -299,11 +299,11 @@ defmodule ClickhouseEcto.QueryString do
     # IO.inspect {prefix, sources, pos, limit}
     current =
       case elem(sources, pos) do
+        {:fragment, _, _} ->
+          {nil, [?f | Integer.to_string(pos)], nil}
         {table, schema, _} ->
           name = [String.first(table) | Integer.to_string(pos)]
           {Helpers.quote_table(prefix, table), name, schema}
-        {:fragment, _, _} ->
-          {nil, [?f | Integer.to_string(pos)], nil}
         %Ecto.SubQuery{} ->
           {nil, [?s | Integer.to_string(pos)], nil}
       end
