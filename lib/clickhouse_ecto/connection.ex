@@ -75,7 +75,7 @@ defmodule ClickhouseEcto.Connection do
   defp process_rows(result, options) do
     decoder = options[:decode_mapper] || fn x -> x end
     Map.update!(result, :rows, fn row ->
-      unless is_nil(row), do: Enum.map(row, decoder)
+      unless is_nil(row), do: Enum.map(row, fn r -> Tuple.to_list(decoder(r)) end)
     end)
   end
 
