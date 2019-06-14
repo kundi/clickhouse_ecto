@@ -1,5 +1,7 @@
 # ClickhouseEcto
 
+Currently being rewritten for ecto3
+
 Ecto adapter for ClickHouse database using [clickhousex driver](http://github.com/appodeal/clickhousex).
 
 ## Installation
