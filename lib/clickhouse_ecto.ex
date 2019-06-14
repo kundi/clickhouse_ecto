@@ -23,8 +23,6 @@ defmodule ClickhouseEcto do
   def loaders({:embed, _} = type, _), do: [&Ecto.Adapters.SQL.load_embed(type, &1)]
   def loaders(ecto_type, type),       do: [&(decode(&1, ecto_type)), type]
 
-  def execute(a, b, c, d, e), do: Ecto.Adapters.SQL.execute(a, b, c, d, e)
-
   ## Migration
   def supports_ddl_transaction?, do: Migration.supports_ddl_transaction?
 
