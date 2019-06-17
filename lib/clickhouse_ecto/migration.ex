@@ -7,11 +7,15 @@ defmodule ClickhouseEcto.Migration do
 
   @drops [:drop, :drop_if_exists]
 
+  def execute_ddl(command) do
+    convertListToString(execute_ddl_inner(command))
+  end
+
   @doc """
   Receives a DDL command and returns a query that executes it.
   """
-  @spec execute_ddl(command :: Ecto.Adapter.Migration.command) :: String.t
-  def execute_ddl({command, %Table{} = table, columns}) when command in [:create, :create_if_not_exists] do
+  @spec execute_ddl_inner(command :: Ecto.Adapter.Migration.command) :: String.t
+  defp execute_ddl_inner({command, %Table{} = table, columns}) when command in [:create, :create_if_not_exists] do
     engine = table.engine
 
     {_, first_column_name, _, _} = List.first(columns)
@@ -31,36 +35,36 @@ defmodule ClickhouseEcto.Migration do
     [query]
   end
 
-  def execute_ddl({command, %Table{} = table}) when command in @drops do
+  defp execute_ddl_inner({command, %Table{} = table}) when command in @drops do
     [[if_do(command == :drop_if_exists, "DROP TABLE IF EXISTS ", "DROP TABLE "),
       quote_table(table.prefix, table.name)
     ]]
   end
 
-  def execute_ddl({:alter, %Table{} = table, changes}) do
+  defp execute_ddl_inner({:alter, %Table{} = table, changes}) do
     query = [column_changes(table, changes)]
 
     [query]
   end
 
   # TODO: Add 'ON CLUSTER' option.
-  def execute_ddl({:rename, %Table{} = current_table, %Table{} = new_table}) do
+  defp execute_ddl_inner({:rename, %Table{} = current_table, %Table{} = new_table}) do
     [["RENAME TABLE ", quote_name([current_table.prefix, current_table.name]),
       " TO ", quote_name(new_table.name)]]
   end
 
-  def execute_ddl({:rename, %Table{} = _table, _current_column, _new_column}) do
+  defp execute_ddl_inner({:rename, %Table{} = _table, _current_column, _new_column}) do
     # https://github.com/yandex/ClickHouse/issues/146
     raise "It seems like reneaming columns is not supported..."
   end
 
-  def execute_ddl(string) when is_binary(string), do: [string]
+  defp execute_ddl_inner(string) when is_binary(string), do: [string]
 
-  def execute_ddl(keyword) when is_list(keyword),
+  defp execute_ddl_inner(keyword) when is_list(keyword),
     do: error!(nil, "Clickhouse adapter does not support keyword lists in execute")
 
   @doc false
-  def supports_ddl_transaction? do
+  defp supports_ddl_transaction? do
     false
   end
 
@@ -199,6 +203,20 @@ defmodule ClickhouseEcto.Migration do
       type == :string -> [type_name, " "]
       true            -> type_name
     end
+  end
+
+  defp convertListToString(list) do
+    Enum.reduce(list, "", fn(element, result) ->
+      if is_list(element) do
+        result <> convertListToString(element)
+      else
+        if is_integer(element) do
+          result <> <<element :: utf8>>
+        else
+          result <> element
+        end
+      end
+    end)
   end
 
 end
