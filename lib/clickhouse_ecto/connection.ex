@@ -107,4 +107,6 @@ defmodule ClickhouseEcto.Connection do
 
   ## Migration
   def execute_ddl(command), do: ClickhouseEcto.Migration.execute_ddl(command)
+
+  def ddl_logs(reso), do: [{:debug, Atom.to_string(reso.command), []}]
 end
