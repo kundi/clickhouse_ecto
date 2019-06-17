@@ -64,7 +64,7 @@ defmodule ClickhouseEcto.Migration do
     do: error!(nil, "Clickhouse adapter does not support keyword lists in execute")
 
   @doc false
-  defp supports_ddl_transaction? do
+  def supports_ddl_transaction? do
     false
   end
 
