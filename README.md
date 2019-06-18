@@ -1,8 +1,11 @@
-# ClickhouseEcto
-
-Currently being rewritten for ecto3
+# ClickhouseEcto      
+*in progress...*
 
 Ecto adapter for ClickHouse database using [clickhousex driver](http://github.com/appodeal/clickhousex).
+
+### Why forked?
+
+Whis fork is rewritten to use `Ecto 3.1.4` and `DBConnection 2.0` for support of **Row binary** clickhousex format which is faster and more compact. This fork also provides changes and fixes for issues with migrations and clickhousex compatability (i.e. array altering)
 
 ## Installation
 
