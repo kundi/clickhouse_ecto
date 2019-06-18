@@ -162,7 +162,7 @@ defmodule ClickhouseEcto.Migration do
   defp default_expr({:ok, nil}, _type),
     do: error!(nil, "NULL is not supported")
   defp default_expr({:ok, []}, _type),
-    do: error!(nil, "arrays are not supported")
+    do: [" DEFAULT []"]
   defp default_expr({:ok, literal}, _type) when is_binary(literal),
     do: [" DEFAULT '", escape_string(literal), ?']
   defp default_expr({:ok, literal}, _type) when is_number(literal),
@@ -190,7 +190,7 @@ defmodule ClickhouseEcto.Migration do
     do: [?\s, options]
 
   defp column_type({:array, type}, opts),
-    do: [column_type(type, opts), "[]"]
+    do: ["Array(", column_type(type, opts), ")"]
   defp column_type(type, opts) do
     size      = Keyword.get(opts, :size)
     precision = Keyword.get(opts, :precision)
