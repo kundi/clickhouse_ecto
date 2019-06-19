@@ -13,9 +13,10 @@ The package can be installed
 by adding `clickhouse_ecto` to your list of dependencies in `mix.exs`:
 
 ```elixir
-def deps do
+
+defp deps do
   [
-    {:clickhouse_ecto, "~> 0.2.8"}
+    {:clickhouse_ecto, git: "https://github.com/hissssst/clickhouse_ecto.git", branch: "master"}
   ]
 end
 ```
@@ -38,7 +39,7 @@ config :example_app, ExampleApp.ClickHouseRepo,
        pool_size: 30
 ```
 
-Do not forget to add :clickhouse_ecto and :clickhousex to your
+Do not forget to add `:clickhouse_ecto` and `:clickhousex` (and `:telemetry`) to your
 applications:
 
 ```elixir
@@ -46,7 +47,7 @@ applications:
     [
       mod: {ExampleApp, []},
       applications: [
-        :clickhousex, :clickhouse_ecto
+        :clickhousex, :clickhouse_ecto, :telemetry
       ]
     ]
   end
@@ -145,7 +146,5 @@ SELECT c0."date", c0."site_id", c0."source", c0."ip", c0."score", c0."width", c0
   ip: "", score: #Decimal<1.1>, site_id: 1, source: "", width: 0}]
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/clickhouse_ecto](https://hexdocs.pm/clickhouse_ecto).
+Documentation can be found at [https://hexdocs.pm/clickhouse_ecto](https://hexdocs.pm/clickhouse_ecto).
 
