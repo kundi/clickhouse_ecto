@@ -10,7 +10,8 @@ defmodule ClickhouseEcto.Mixfile do
       deps: deps(),
       description: description(),
       package: package(),
-      source_url: "https://github.com/appodeal/clickhouse_ecto"
+      source_url: "https://github.com/appodeal/clickhouse_ecto",
+      preffered_cli_env: [espec: :test]
     ]
   end
 
@@ -26,7 +27,8 @@ defmodule ClickhouseEcto.Mixfile do
     [
       {:ecto_sql, "~> 3.1.4"},
       {:clickhousex, "~> 0.4.0"},
-      {:ex_doc, "~> 0.19", only: :dev}
+      {:ex_doc, "~> 0.19", only: :dev},
+      {:espec, "~> 1.7.0", only: :test}
     ]
   end
 
