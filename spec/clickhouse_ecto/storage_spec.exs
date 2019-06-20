@@ -5,12 +5,12 @@ defmodule ClickhouseEcto.StorageSpec do
 
     describe("storage spec") do
         context("up storage") do
-            it("up database chtry") do
+            it("status of running database chtry should be :ok") do
                 opts = [{:database, :chtry}]
                 Storage.storage_up(opts) |> should(be :ok)
             end
             
-            it("up database new_database") do
+            it("status of running database new_database should be :ok") do
                 opts = [{:database, :new_database}]
                 Storage.storage_up(opts) |> should(be :ok)
             end
@@ -22,7 +22,7 @@ defmodule ClickhouseEcto.StorageSpec do
                 Storage.storage_up([{:database, :new_database}])
             end
 
-            it("down database chrty") do
+            it("status of dropping database chrty should be :ok") do
                 opts = [{:database, :chtry}]
                 Storage.storage_down(opts) |> should(be :ok)
             end
@@ -32,7 +32,7 @@ defmodule ClickhouseEcto.StorageSpec do
                     Storage.storage_down([{:database, :chtry}])
                 end
 
-                it("down database chtry again") do
+                it("status of dropping database chrty should be :already_down") do
                     opts = [{:database, :chtry}]
                     Storage.storage_down(opts) |> should(be {:error, :already_down})
                 end
