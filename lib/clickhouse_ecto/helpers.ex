@@ -1,10 +1,8 @@
 defmodule ClickhouseEcto.Helpers do
 
-  alias ClickhouseEcto.QueryString
-
   def get_source(query, sources, ix, source) do
     {expr, name, _schema} = elem(sources, ix)
-    {expr || QueryString.paren_expr(source, sources, query), name}
+    {expr || ClickhouseEcto.QueryString.paren_expr(source, sources, query), name}
   end
 
   def quote_qualified_name(name, sources, ix) do
@@ -45,10 +43,8 @@ defmodule ClickhouseEcto.Helpers do
   def single_quote(value), do: value |> escape_string |> wrap_in(?')
 
   def intersperse_map(list, separator, mapper, acc \\ [])
-  def intersperse_map([], _separator, _mapper, acc),
-    do: acc
-  def intersperse_map([elem], _separator, mapper, acc),
-    do: [acc | mapper.(elem)]
+  def intersperse_map([], _separator, _mapper, acc), do: acc
+  def intersperse_map([elem], _separator, mapper, acc), do: [acc | mapper.(elem)]
   def intersperse_map([elem | rest], separator, mapper, acc),
     do: intersperse_map(rest, separator, mapper, [acc, mapper.(elem), separator])
 
