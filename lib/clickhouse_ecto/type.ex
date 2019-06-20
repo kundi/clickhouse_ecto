@@ -14,7 +14,7 @@ defmodule ClickhouseEcto.Type do
 
   def encode(value, :decimal) do
     try do
-      {float_value, _} = value |> Decimal.new |> Decimal.to_string |> Float.parse
+      {float_value, _} = value |> Decimal.from_float |> Decimal.to_string |> Float.parse
       {:ok, float_value}
     rescue
       _e in FunctionClauseError ->
@@ -43,7 +43,7 @@ defmodule ClickhouseEcto.Type do
     tmp = if is_binary(value), do: value, else: to_string(value)
     case Float.parse(tmp) do
       {float, _}  -> {:ok, float}
-      :error    -> {:error, "Not an float value"}
+      :error    -> {:error, "Not a float value"}
     end
   end
 
